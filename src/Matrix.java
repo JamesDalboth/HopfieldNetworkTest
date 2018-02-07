@@ -1,3 +1,5 @@
+import java.util.Random;
+
 public class Matrix {
 
   private int n;
@@ -127,6 +129,17 @@ public class Matrix {
 
   public Matrix getCol(int i) {
     return Matrix.transpose(Matrix.transpose(this).getRow(i));
+  }
+
+  public static Matrix random(int n, int m) {
+    Random rand = new Random();
+    Matrix mat = new Matrix(n,m);
+    for (int i = 0; i < n; i++) {
+      for (int j = 0; j < m; j++) {
+        mat.set(i,j,rand.nextInt(2));
+      }
+    }
+    return mat;
   }
 
 

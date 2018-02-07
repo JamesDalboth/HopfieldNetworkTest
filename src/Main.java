@@ -46,8 +46,8 @@ public class Main {
 
     DiscreteHopfieldNetwork dhn = new DiscreteHopfieldNetwork(width, height);
     dhn.train(trainingData, trainingDataArray.length);
-    dhn.setNodes(Matrix.transpose(makeMatrix(new int[][]{test})));
-    dhn.asynchronous();
+    dhn.setNodes(Matrix.random(width*height,1));
+    dhn.run(2);
   }
 
   public static Matrix makeMatrix(int[][] data) {

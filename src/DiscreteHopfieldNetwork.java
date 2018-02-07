@@ -1,4 +1,10 @@
+import java.awt.Graphics;
+import javax.swing.JFrame;
+
 public class DiscreteHopfieldNetwork {
+
+  private JFrame frame;
+  private int width = 100;
 
   private int n;
 
@@ -28,15 +34,18 @@ public class DiscreteHopfieldNetwork {
   }
 
   public void print() {
-
+    Graphics g = frame.getGraphics();
+    g.clearRect(0,0,width*n,width*m);
     for (int i = 0; i < n; i++) {
       for (int j = 0; j < m; j++) {
         switch (nodes.getElements()[j + i * n][0]) {
           case 1:
             System.out.print(1 + " ");
+            g.fillRect(j*width,i*width,width,width);
             break;
           case -1:
             System.out.print(0 + " ");
+            break;
         }
       }
       System.out.println();
@@ -51,14 +60,36 @@ public class DiscreteHopfieldNetwork {
     }
     return 1;
   }
+  public void run(int p) {
+    frame = new JFrame();
+    frame.setSize(n * width, m * width);
+    frame.setVisible(true);
 
-  public void asynchronous() {
-    print();
+    asynchronous(p);
+  }
 
-    for (int i = 0; i < n * m; i++) {
-      nodes.set(i, 0, sign(weights.getRow(i).multiply(nodes).value()));
+  public void asynchronous(int p) {
+    if (p == 0) {
+      print();
+    } else {
+      print();
+
+      try {
+        Thread.sleep(1000);
+      } catch (InterruptedException e) {
+        e.printStackTrace();
+      }
+
+      for (int i = 0; i < n * m; i++) {
+        nodes.set(i, 0, sign(weights.getRow(i).multiply(nodes).value()));
+        print();
+        try {
+          Thread.sleep(100);
+        } catch (InterruptedException e) {
+          e.printStackTrace();
+        }
+      }
+      asynchronous(p-1);
     }
-
-    print();
   }
 }
