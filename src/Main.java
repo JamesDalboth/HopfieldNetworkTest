@@ -1,5 +1,8 @@
 public class Main {
 
+  private static int width = 6;
+  private static int height = 6;
+
   static int[] one = new int[]{
       0, 0, 1, 0, 0, 0,
       0, 1, 0, 1, 0, 0,
@@ -27,22 +30,23 @@ public class Main {
       0, 1, 1, 1, 1, 0
   };
 
-  static int[] halfTwo = new int[]{
-      0, 1, 1, 1, 1, 0,
-      0, 0, 0, 0, 0, 1,
-      0, 0, 0, 0, 0, 1,
-      0, 0, 0, 0, 0, 1,
-      0, 0, 0, 0, 0, 1,
-      0, 0, 0, 1, 1, 0
+  static int[] test = new int[]{
+      0, 0, 0, 0, 0, 0,
+      0, 0, 0, 1, 0, 0,
+      0, 0, 0, 1, 0, 0,
+      0, 0, 0, 1, 0, 0,
+      0, 0, 0, 1, 0, 0,
+      0, 0, 0, 1, 0, 0
   };
 
 
   public static void main(String[] args) {
-    Matrix trainingData = makeMatrix(new int[][]{zero, one, two});
+    int[][] trainingDataArray = new int[][]{zero, one, two};
+    Matrix trainingData = makeMatrix(trainingDataArray);
 
-    DiscreteHopfieldNetwork dhn = new DiscreteHopfieldNetwork(6, 6);
-    dhn.train(trainingData, 3);
-    dhn.setNodes(Matrix.transpose(makeMatrix(new int[][]{halfTwo})));
+    DiscreteHopfieldNetwork dhn = new DiscreteHopfieldNetwork(width, height);
+    dhn.train(trainingData, trainingDataArray.length);
+    dhn.setNodes(Matrix.transpose(makeMatrix(new int[][]{test})));
     dhn.asynchronous();
   }
 
