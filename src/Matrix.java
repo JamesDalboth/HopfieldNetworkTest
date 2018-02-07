@@ -136,7 +136,7 @@ public class Matrix {
     Matrix mat = new Matrix(n,m);
     for (int i = 0; i < n; i++) {
       for (int j = 0; j < m; j++) {
-        mat.set(i,j,rand.nextInt(2));
+        mat.set(i,j,rand.nextInt(2) * 2 - 1);
       }
     }
     return mat;

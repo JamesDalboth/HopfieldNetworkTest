@@ -1,10 +1,11 @@
+import java.awt.Color;
 import java.awt.Graphics;
 import javax.swing.JFrame;
 
 public class DiscreteHopfieldNetwork {
 
   private JFrame frame;
-  private int width = 100;
+  private int width = 50;
 
   private int n;
 
@@ -15,6 +16,8 @@ public class DiscreteHopfieldNetwork {
   private Matrix weights;
 
   public DiscreteHopfieldNetwork(int n, int m) {
+
+
     this.n = n;
 
     this.m = m;
@@ -25,6 +28,11 @@ public class DiscreteHopfieldNetwork {
   }
 
   public void train(Matrix data, int n) {
+
+    frame = new JFrame();
+    frame.setSize(this.n * width, this.m * width);
+    frame.setVisible(true);
+
     Matrix U = Matrix.identityRemove(Matrix.transpose(data).multiply(data));
     weights = U;
   }
@@ -35,18 +43,19 @@ public class DiscreteHopfieldNetwork {
 
   public void print() {
     Graphics g = frame.getGraphics();
-    g.clearRect(0,0,width*n,width*m);
     for (int i = 0; i < n; i++) {
       for (int j = 0; j < m; j++) {
         switch (nodes.getElements()[j + i * n][0]) {
           case 1:
             System.out.print(1 + " ");
-            g.fillRect(j*width,i*width,width,width);
+            g.setColor(Color.BLUE);
             break;
           case -1:
             System.out.print(0 + " ");
+            g.setColor(Color.red);
             break;
         }
+        g.fillRect(j*width,i*width,width,width);
       }
       System.out.println();
     }
@@ -61,9 +70,6 @@ public class DiscreteHopfieldNetwork {
     return 1;
   }
   public void run(int p) {
-    frame = new JFrame();
-    frame.setSize(n * width, m * width);
-    frame.setVisible(true);
 
     asynchronous(p);
   }
@@ -74,17 +80,11 @@ public class DiscreteHopfieldNetwork {
     } else {
       print();
 
-      try {
-        Thread.sleep(1000);
-      } catch (InterruptedException e) {
-        e.printStackTrace();
-      }
-
       for (int i = 0; i < n * m; i++) {
         nodes.set(i, 0, sign(weights.getRow(i).multiply(nodes).value()));
         print();
         try {
-          Thread.sleep(100);
+          Thread.sleep(10);
         } catch (InterruptedException e) {
           e.printStackTrace();
         }
