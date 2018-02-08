@@ -2,39 +2,40 @@ import java.awt.Color;
 import java.awt.Graphics;
 import javax.swing.JFrame;
 
-public class DiscreteHopfieldNetwork {
+public class DiscreteHopfieldNetwork extends JFrame{
 
-  private JFrame frame;
+  private int picWidth;
+  private int picHeight;
+
   private int width = 50;
-
-  private int n;
-
-  private int m;
 
   private Matrix nodes;
 
   private Matrix weights;
 
-  public DiscreteHopfieldNetwork(int n, int m) {
 
+  private Mode mode;
 
-    this.n = n;
-
-    this.m = m;
-
-    nodes = new Matrix(1, n * m);
-
-    weights = new Matrix(n * m, n * m);
+  public DiscreteHopfieldNetwork(int picWidth, int picHeight) {
+    super();
+    this.picWidth = picWidth;
+    this.picHeight = picHeight;
   }
 
-  public void train(Matrix data, int n) {
+  public void setMode(Mode mode) {
+    this.mode = mode;
+  }
 
-    frame = new JFrame();
-    frame.setSize(this.n * width, this.m * width);
-    frame.setVisible(true);
+  public void train(Matrix data) {
+    //JFrame setup
+    this.setSize(picWidth * width, picHeight * width);
+    this.setVisible(true);
 
-    Matrix U = Matrix.identityRemove(Matrix.transpose(data).multiply(data));
+    //Calculating the Weight matrix
+    Matrix U = data.multiply(data.transpose()).identityRemove();
     weights = U;
+    weights.print();
+    ;
   }
 
   public void setNodes(Matrix in) {
@@ -42,10 +43,11 @@ public class DiscreteHopfieldNetwork {
   }
 
   public void print() {
-    Graphics g = frame.getGraphics();
-    for (int i = 0; i < n; i++) {
-      for (int j = 0; j < m; j++) {
-        switch (nodes.getElements()[j + i * n][0]) {
+    Graphics g = this.getGraphics();
+
+    for (int i = 0; i < picWidth; i++) {
+      for (int j = 0; j < picHeight; j++) {
+        switch (nodes.getVal(0,j + i * picWidth)) {
           case 1:
             System.out.print(1 + " ");
             g.setColor(Color.BLUE);
@@ -69,26 +71,49 @@ public class DiscreteHopfieldNetwork {
     }
     return 1;
   }
-  public void run(int p) {
 
-    asynchronous(p);
+  public Matrix sign(Matrix mat) {
+    for (int i = 0; i < mat.getElements().length;i++) {
+      for (int j = 0; j < mat.getElements()[0].length;j++) {
+        mat.set(i,j,mat.getVal(i,j) < 0 ? -1 : 1);
+      }
+    }
+    return mat;
+  }
+
+  public void run(int p) {
+    switch (mode) {
+      case Sync:
+        synchronous(p);
+        break;
+      case Async:
+        asynchronous(p);
+        break;
+    }
+  }
+
+  public void synchronous(int p) {
+    print();
+    if (p != 0) {
+      Matrix s = weights.multiply(nodes);
+      nodes = sign(s);
+      try {
+        Thread.sleep(100);
+      } catch (InterruptedException e) {
+        e.printStackTrace();
+      }
+      synchronous(p-1);
+    }
   }
 
   public void asynchronous(int p) {
-    if (p == 0) {
-      print();
-    } else {
-      print();
-
-      for (int i = 0; i < n * m; i++) {
-        nodes.set(i, 0, sign(weights.getRow(i).multiply(nodes).value()));
+    print();
+    if (p != 0) {
+      for (int i = 0; i < picWidth * picHeight; i++) {
+        nodes.set(0, i, sign(weights.getRow(i).multiply(nodes).value()));
         print();
-        try {
-          Thread.sleep(10);
-        } catch (InterruptedException e) {
-          e.printStackTrace();
-        }
       }
+      System.out.println("Next " + p);
       asynchronous(p-1);
     }
   }

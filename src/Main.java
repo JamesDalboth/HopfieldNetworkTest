@@ -1,3 +1,5 @@
+
+
 public class Main {
 
   static int[] one = new int[]{
@@ -31,15 +33,15 @@ public class Main {
   static int[] two = new int[]{
       0, 0, 1, 1, 0, 0, 0, 0, 0, 0, 0, 0,
       0, 1, 1, 1, 1, 0, 0, 0, 0, 0, 0, 0,
-      0, 1, 0, 0, 1, 1, 0, 0, 0, 0, 0, 0,
-      0, 0, 0, 0, 0, 1, 1, 0, 0, 0, 0, 0,
+      1, 1, 0, 0, 1, 1, 0, 0, 0, 0, 0, 0,
+      1, 0, 0, 0, 0, 1, 1, 0, 0, 0, 0, 0,
       0, 0, 0, 0, 0, 1, 1, 0, 0, 0, 0, 0,
       0, 0, 0, 0, 1, 1, 0, 0, 0, 0, 0, 0,
       0, 0, 0, 1, 1, 0, 0, 0, 0, 0, 0, 0,
-      0, 1, 1, 1, 0, 0, 0, 0, 0, 0, 0, 0,
-      0, 1, 1, 0, 0, 0, 0, 0, 0, 0, 0, 0,
-      0, 1, 1, 1, 1, 1, 1, 1, 1, 1, 1, 0,
-      0, 1, 1, 1, 1, 1, 1, 1, 1, 1, 1, 0,
+      0, 0, 1, 1, 0, 0, 0, 0, 0, 0, 0, 0,
+      0, 0, 1, 1, 0, 0, 0, 0, 0, 0, 0, 0,
+      1, 1, 1, 1, 1, 1, 1, 1, 1, 1, 1, 0,
+      1, 1, 1, 1, 1, 1, 1, 1, 1, 1, 1, 0,
       0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0
   };
   static int[] test = new int[]{
@@ -59,24 +61,23 @@ public class Main {
   private static int height = 12;
 
   public static void main(String[] args) {
-    int[][] trainingDataArray = new int[][]{zero, one, two};
-    Matrix trainingData = makeMatrix(trainingDataArray);
 
+
+    int[][] trainingDataArray = new int[][]{fix(zero), fix(one), fix(two)};
+    Matrix trainingData = new Matrix(trainingDataArray);
     DiscreteHopfieldNetwork dhn = new DiscreteHopfieldNetwork(width, height);
-    dhn.train(trainingData, trainingDataArray.length);
-    dhn.setNodes(Matrix.random(width * height, 1));
-    dhn.run(3);
+    dhn.train(trainingData);
+    dhn.setNodes(Matrix.random(1,width * height));
+    dhn.setMode(Mode.Sync);
+    dhn.run(30);
   }
 
-  public static Matrix makeMatrix(int[][] data) {
-
-    Matrix m = new Matrix(data.length, data[0].length);
+  public static int[] fix(int[] data) {
     for (int i = 0; i < data.length; i++) {
-      for (int j = 0; j < data[0].length; j++) {
-        m.set(i, j, 2 * data[i][j] - 1);
-      }
+      data[i] = data[i] == 0 ? -1 : 1;
     }
-    return m;
+    return data;
   }
+
 
 }
