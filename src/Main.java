@@ -53,6 +53,21 @@ public class Main {
       1, 1, 1, 1, 1, 1, 1, 1, 1, 1, 1, 0,
       0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0
   };
+  static int[] three = new int[]{
+      0, 0, 0, 1, 1, 1, 1, 0, 0, 0, 0, 0,
+      0, 0, 1, 1, 1, 1, 1, 1, 0, 0, 0, 0,
+      0, 1, 1, 0, 0, 0, 0, 1, 1, 0, 0, 0,
+      0, 0, 0, 0, 0, 0, 0, 1, 1, 0, 0, 0,
+      0, 0, 0, 0, 0, 1, 1, 1, 1, 0, 0, 0,
+      0, 0, 0, 0, 0, 1, 1, 1, 1, 0, 0, 0,
+      0, 0, 0, 0, 0, 1, 1, 1, 1, 0, 0, 0,
+      0, 0, 0, 0, 0, 0, 0, 1, 1, 0, 0, 0,
+      0, 1, 1, 0, 0, 0, 0, 1, 1, 0, 0, 0,
+      0, 0, 1, 1, 0, 0, 0, 1, 1, 0, 0, 0,
+      0, 0, 0, 1, 1, 1, 1, 1, 1, 0, 0, 0,
+      0, 0, 0, 0, 1, 1, 1, 0, 0, 0, 0, 0
+  };
+
   static int[] test = new int[]{
       0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0,
       0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0,
@@ -72,7 +87,7 @@ public class Main {
   public static void main(String[] args) {
 
 
-    int[][] trainingDataArray = new int[][]{fix(zero), fix(one), fix(two)};
+    int[][] trainingDataArray = new int[][]{fix(zero), fix(one), fix(two),fix(three)};
     Matrix trainingData = new Matrix(trainingDataArray);
     DiscreteHopfieldNetwork dhn = new DiscreteHopfieldNetwork(width, height);
     dhn.train(trainingData);
@@ -105,7 +120,7 @@ public class Main {
       }
 
     });
-    distort.setBounds(50,400,200,50);
+    distort.setBounds(50,600,200,50);
     p.add(distort);
 
 
@@ -113,9 +128,10 @@ public class Main {
     list.addElement("Zero");
     list.addElement("One");
     list.addElement(" Two");
+    list.addElement("Three");
     list.addElement("Random");
     JList<String> l = new JList<>(list);
-    l.setBounds(50,150,200,75);
+    l.setBounds(50,150,200,150);
 
     l.addListSelectionListener(new ListSelectionListener() {
       @Override
@@ -131,6 +147,9 @@ public class Main {
             dhn.setNodes(Matrix.makeMatrix(two));
             break;
           case 3:
+            dhn.setNodes(Matrix.makeMatrix(three));
+            break;
+          case 4:
             dhn.setNodes(Matrix.random(1,width*height));
         }
 
@@ -145,7 +164,7 @@ public class Main {
     modes.addElement("Async");
     modes.addElement("Sync");
     JList<String> m = new JList<>(modes);
-    m.setBounds(50,250,200,40);
+    m.setBounds(50,450,200,40);
 
     m.addListSelectionListener(new ListSelectionListener() {
       @Override
