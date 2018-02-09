@@ -122,4 +122,23 @@ public class Matrix {
       System.out.println();
     }
   }
+
+  public static Matrix makeMatrix(int[] data) {
+    Matrix result = new Matrix(1,data.length);
+    for (int i = 0; i < data.length; i++) {
+      result.set(0,i,data[i]);
+    }
+    return result;
+  }
+
+  public static Matrix distort(Matrix in,float percent) {
+    Random rand = new Random();
+    Matrix result = new Matrix(in.getWidth(),in.getHeight());
+    for (int i = 0; i < result.getWidth();i++) {
+      for (int j = 0; j < result.getHeight(); j++) {
+        result.set(i,j, rand.nextFloat() < percent ? in.getVal(i,j) : -in.getVal(i,j));
+      }
+    }
+    return result;
+  }
 }

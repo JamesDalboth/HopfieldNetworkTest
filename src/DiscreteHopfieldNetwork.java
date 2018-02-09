@@ -20,6 +20,16 @@ public class DiscreteHopfieldNetwork extends JFrame{
     super();
     this.picWidth = picWidth;
     this.picHeight = picHeight;
+    setDefaultCloseOperation(JFrame.EXIT_ON_CLOSE);
+
+
+    nodes = Matrix.random(1,picWidth*picHeight);
+
+    //JFrame setup
+
+    width = 800 / picWidth;
+    this.setVisible(true);
+
   }
 
   public void setMode(Mode mode) {
@@ -27,24 +37,21 @@ public class DiscreteHopfieldNetwork extends JFrame{
   }
 
   public void train(Matrix data) {
-    //JFrame setup
-    this.setSize(picWidth * width, picHeight * width);
-    this.setVisible(true);
+
 
     //Calculating the Weight matrix
     Matrix U = data.multiply(data.transpose()).identityRemove();
     weights = U;
-    weights.print();
-    ;
   }
 
   public void setNodes(Matrix in) {
+    paint(this.getGraphics());
     nodes = in;
   }
 
-  public void print() {
-    Graphics g = this.getGraphics();
-
+  @Override
+  public void paint(Graphics g){
+    super.paint(g);
     for (int i = 0; i < picWidth; i++) {
       for (int j = 0; j < picHeight; j++) {
         switch (nodes.getVal(0,j + i * picWidth)) {
@@ -57,7 +64,7 @@ public class DiscreteHopfieldNetwork extends JFrame{
             g.setColor(Color.red);
             break;
         }
-        g.fillRect(j*width,i*width,width,width);
+        g.fillRect(j*width + 300,i*width + 100,width,width);
       }
       System.out.println();
     }
@@ -82,6 +89,13 @@ public class DiscreteHopfieldNetwork extends JFrame{
   }
 
   public void run(int p) {
+    paint(this.getGraphics());
+
+    try {
+      Thread.sleep(1000);
+    } catch (InterruptedException e) {
+      e.printStackTrace();
+    }
     switch (mode) {
       case Sync:
         synchronous(p);
@@ -93,28 +107,31 @@ public class DiscreteHopfieldNetwork extends JFrame{
   }
 
   public void synchronous(int p) {
-    print();
+
     if (p != 0) {
       Matrix s = weights.multiply(nodes);
       nodes = sign(s);
-      try {
-        Thread.sleep(100);
-      } catch (InterruptedException e) {
-        e.printStackTrace();
-      }
-      synchronous(p-1);
+      run(p-1);
     }
   }
 
   public void asynchronous(int p) {
-    print();
     if (p != 0) {
       for (int i = 0; i < picWidth * picHeight; i++) {
+        paint(this.getGraphics());
         nodes.set(0, i, sign(weights.getRow(i).multiply(nodes).value()));
-        print();
+        try {
+          Thread.sleep(100);
+        } catch (InterruptedException e) {
+          e.printStackTrace();
+        }
       }
       System.out.println("Next " + p);
-      asynchronous(p-1);
+      run(p-1);
     }
+  }
+
+  public Matrix getNodes() {
+    return nodes;
   }
 }
