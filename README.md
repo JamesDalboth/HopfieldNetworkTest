@@ -51,3 +51,12 @@ lets say were at node i
 the nodes new value will be WiX
 
 where Wi represents the ith row of the weight matrix
+
+
+# Running Synchronously
+
+This time we simply say the state of the nodes at time t is Xt and we get
+
+Xt+1 = WXt
+
+This is much simpler and easier to implement. The effects are normally less great though.
